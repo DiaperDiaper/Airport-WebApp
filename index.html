@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Stand Assignment</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        h1 { text-align: center; color: #333; }
+        label { font-size: 16px; }
+        select, button { width: 100%; padding: 10px; margin: 10px 0; font-size: 16px; }
+        p { text-align: center; font-size: 18px; color: green; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Assign Stand</h1>
+        <label for="icao">Select Airport (ICAO):</label>
+        <select id="icao">
+            <option value="FACT">Cape Town (FACT)</option>
+            <option value="FAOR">OR Tambo (FAOR)</option>
+            <option value="FAPE">Port Elizabeth (FAPE)</option>
+            <option value="FAGG">George (FAGG)</option>
+            <option value="FALA">Lanseria (FALA)</option>
+            <option value="FABL">Bloemfontein (FABL)</option>
+        </select>
+
+        <label for="aircraft-type">Select Aircraft Type:</label>
+        <select id="aircraft-type">
+            <option value="light">Light</option>
+            <option value="medium">Medium</option>
+            <option value="heavy">Heavy</option>
+            <option value="cargo">Cargo</option>
+        </select>
+
+        <button onclick="assignStand()">Assign Stand</button>
+
+        <p id="result"></p>
+    </div>
+
+    <script>
+        function assignStand() {
+            const icao = document.getElementById('icao').value;
+            const aircraftType = document.getElementById('aircraft-type').value;
+
+            fetch(`/assign_stand?airport=${icao}&type=${aircraftType}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('No stands available for this type.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('result').textContent = `Assigned Stand: ${data.assigned_stand}`;
+                })
+                .catch(error => {
+                    document.getElementById('result').textContent = error.message;
+                });
+        }
+    </script>
+
+</body>
+</html>
